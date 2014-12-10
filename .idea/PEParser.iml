@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="WEB_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/site" isTestSource="false" packagePrefix="app" />
+      <excludeFolder url="file://$MODULE_DIR$/.vagrant" />
+      <excludeFolder url="file://$MODULE_DIR$/site/runtime" />
+      <excludeFolder url="file://$MODULE_DIR$/site/vendor" />
+      <excludeFolder url="file://$MODULE_DIR$/site/web/assets" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library">
+      <library name="PHP">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/site/vendor/yiisoft/yii2-gii" />
+          <root url="file://$MODULE_DIR$/site/vendor/mustangostang/spyc/php4" />
+          <root url="file://$MODULE_DIR$/site/vendor/mrrio/shellwrap/src/MrRio" />
+          <root url="file://$MODULE_DIR$/site/vendor/league/flysystem/src" />
+          <root url="file://$MODULE_DIR$/site/vendor/yiisoft/yii2" />
+        </CLASSES>
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/site/vendor/yiisoft/yii2-gii" />
+          <root url="file://$MODULE_DIR$/site/vendor/mustangostang/spyc/php4" />
+          <root url="file://$MODULE_DIR$/site/vendor/mrrio/shellwrap/src/MrRio" />
+          <root url="file://$MODULE_DIR$/site/vendor/league/flysystem/src" />
+          <root url="file://$MODULE_DIR$/site/vendor/yiisoft/yii2" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+  </component>
+</module>
+

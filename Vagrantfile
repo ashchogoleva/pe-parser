@@ -26,6 +26,7 @@ apt-get install -y mc
 SCRIPT
 
 $project_home = "/home/vagrant/project"
+$malware_dir = "/home/vagrant/malware"
 $script = <<SCRIPT
 composer global require "fxp/composer-asset-plugin:1.0.*@dev"
 cd #{$project_home} && composer install --prefer-dist
@@ -60,6 +61,7 @@ Vagrant.configure("2") do |config|
     end
 
     config.vm.synced_folder "./site", $project_home
+    config.vm.synced_folder "./malware", $malware_dir
 
     config.vm.provision :shell, :privileged => true, :inline => $init_update
     config.vm.provision :shell, :privileged => true, :inline => $init_script

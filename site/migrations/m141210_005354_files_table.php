@@ -11,6 +11,7 @@ class m141210_005354_files_table extends Migration
             "md5"      => "varchar(255) default null",
             "size"     => "int default null",
             /* -- */
+            "malware"     => "tinyint(1) default null",
         ];
 
         $dataFields = [ // int, text,

@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
+use MrRio\ShellWrap as sh;
 use Yii;
 use yii\web\Controller;
 
@@ -12,7 +13,9 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        $filesystem = new Filesystem(new Local('/home/vagrant/malware'));
+        $dir = '/home/vagrant/malware';
+
+        $filesystem = new Filesystem(new Local($dir));
 
         foreach ($filesystem->listContents() as $content) {
             if ($content['filename'] === '' || ($content['type'] !== 'file')) {
@@ -20,6 +23,9 @@ class SiteController extends Controller
             }
 
             $file = $filesystem->get($content['basename']);
+
+
+            echo sh::pedump("--mz", "--format yaml", join(DIRECTORY_SEPARATOR, [$dir, $file->getPath()]));
 
         }
 

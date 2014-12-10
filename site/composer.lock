@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2f92ba2454c46549ec18cc01c015ca7d",
+    "hash": "48369274e96be9ab9f949fc32c8d55e7",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -313,6 +313,40 @@
             "time": "2014-12-07 13:29:05"
         },
         {
+            "name": "d11wtq/boris",
+            "version": "v1.0.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/d11wtq/boris.git",
+                "reference": "125dd4e5752639af7678a22ea597115646d89c6e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/d11wtq/boris/zipball/125dd4e5752639af7678a22ea597115646d89c6e",
+                "reference": "125dd4e5752639af7678a22ea597115646d89c6e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "suggest": {
+                "ext-pcntl": "*",
+                "ext-posix": "*",
+                "ext-readline": "*"
+            },
+            "bin": [
+                "bin/boris"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Boris": "lib"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "time": "2014-01-17 12:21:18"
+        },
+        {
             "name": "ezyang/htmlpurifier",
             "version": "v4.6.0",
             "source": {
@@ -444,6 +478,56 @@
                 "storage"
             ],
             "time": "2014-12-09 15:48:33"
+        },
+        {
+            "name": "mrrio/shellwrap",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/MrRio/shellwrap.git",
+                "reference": "bf773fc4f992351826e41a486fe457227abc37e0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/MrRio/shellwrap/zipball/bf773fc4f992351826e41a486fe457227abc37e0",
+                "reference": "bf773fc4f992351826e41a486fe457227abc37e0",
+                "shasum": ""
+            },
+            "require": {
+                "d11wtq/boris": "1.0.*",
+                "php": ">=5.3.0"
+            },
+            "bin": [
+                "bin/shellwrap"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "MrRio": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "James Hall",
+                    "email": "james@snapshotmedia.co.uk",
+                    "homepage": "http://twitter.com/MrRio",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Use any command-line tool as a PHP function.",
+            "homepage": "http://github.com/MrRio/shellwrap",
+            "keywords": [
+                "api",
+                "command",
+                "command-line",
+                "exec",
+                "shell"
+            ],
+            "time": "2014-11-11 19:08:16"
         },
         {
             "name": "yiisoft/yii2",
@@ -930,7 +1014,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "league/flysystem": 20
+        "league/flysystem": 20,
+        "mrrio/shellwrap": 20
     },
     "prefer-stable": false,
     "platform": {

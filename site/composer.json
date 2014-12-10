@@ -10,7 +10,8 @@
 
         "bower-asset/jquery": "2.1.1",
         "bower-asset/i-bem":  "0.1.4",
-        "league/flysystem": "~1.0@dev"
+        "league/flysystem": "~1.0@dev",
+        "mrrio/shellwrap": "dev-master"
     },
     "require-dev":       {
         "yiisoft/yii2-codeception": "*",

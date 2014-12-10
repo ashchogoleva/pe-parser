@@ -9,20 +9,29 @@ class m141210_005354_files_table extends Migration
         $columns = [
             "filename" => "varchar(255) default null",
             "md5"      => "varchar(255) default null",
-            "sha1"     => "varchar(255) default null",
-            "sha256"   => "varchar(255) default null",
             "size"     => "int default null",
             /* -- */
         ];
 
         $dataFields = [ // int, text,
-            'bytes_in_last_block'  => 'int',
-            'blocks_in_file'       => 'int',
-            'num_relocs'           => 'int',
-            //'header_paragraphs'    => 'int',
-            'min_extra_paragraphs' => 'int',
-            //'max_extra_paragraphs' => 'int',
-            'overlay_number'       => 'int',
+            /* MZ -- */
+
+            'bytes_in_last_block'   => 'int',
+            'blocks_in_file'        => 'int',
+            'min_extra_paragraphs'  => 'int',
+            'overlay_number'        => 'int',
+            /* PE -- */
+            'sizeOfInitializedData' => 'int',
+            'numberOfSymbols'       => 'int',
+            /* DD -- */
+            'size_EXPORT'           => 'int',
+            'size_IAT'              => 'int',
+            'size_Bound_IAT'        => 'int',
+            'size_LOAD_CONFIG'      => 'int',
+            'size_BASERELOC'        => 'int',
+            'size_CLR_Header'       => 'int',
+
+
         ];
         foreach ($dataFields as $field => $type) {
             $columns[$field] = "{$type} default null";

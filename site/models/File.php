@@ -9,16 +9,19 @@ use Yii;
  *
  * @property string  $filename
  * @property string  $md5
- * @property string  $sha1
- * @property string  $sha256
  * @property integer $size
- * @property integer $magic
  * @property integer $bytes_in_last_block
  * @property integer $blocks_in_file
- * @property integer $num_relocs
- * @property integer $header_paragraphs
  * @property integer $min_extra_paragraphs
- * @property integer $max_extra_paragraphs
+ * @property integer $overlay_number
+ * @property integer $sizeOfInitializedData
+ * @property integer $numberOfSymbols
+ * @property integer $size_EXPORT
+ * @property integer $size_IAT
+ * @property integer $size_Bound_IAT
+ * @property integer $size_LOAD_CONFIG
+ * @property integer $size_BASERELOC
+ * @property integer $size_CLR_Header
  */
 class File extends \yii\db\ActiveRecord
 {
@@ -39,17 +42,22 @@ class File extends \yii\db\ActiveRecord
             [
                 [
                     'size',
-                    'magic',
                     'bytes_in_last_block',
                     'blocks_in_file',
-                    'num_relocs',
-                    'header_paragraphs',
                     'min_extra_paragraphs',
-                    'max_extra_paragraphs'
+                    'overlay_number',
+                    'sizeOfInitializedData',
+                    'numberOfSymbols',
+                    'size_EXPORT',
+                    'size_IAT',
+                    'size_Bound_IAT',
+                    'size_LOAD_CONFIG',
+                    'size_BASERELOC',
+                    'size_CLR_Header'
                 ],
                 'integer'
             ],
-            [['filename', 'md5', 'sha1', 'sha256'], 'string', 'max' => 255]
+            [['filename', 'md5'], 'string', 'max' => 255]
         ];
     }
 
@@ -59,18 +67,21 @@ class File extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'filename'             => 'Filename',
-            'md5'                  => 'Md5',
-            'sha1'                 => 'Sha1',
-            'sha256'               => 'Sha256',
-            'size'                 => 'Size',
-            'magic'                => 'Magic',
-            'bytes_in_last_block'  => 'Bytes In Last Block',
-            'blocks_in_file'       => 'Blocks In File',
-            'num_relocs'           => 'Num Relocs',
-            'header_paragraphs'    => 'Header Paragraphs',
-            'min_extra_paragraphs' => 'Min Extra Paragraphs',
-            'max_extra_paragraphs' => 'Max Extra Paragraphs',
+            'filename'              => 'Filename',
+            'md5'                   => 'Md5',
+            'size'                  => 'Size',
+            'bytes_in_last_block'   => 'Bytes In Last Block',
+            'blocks_in_file'        => 'Blocks In File',
+            'min_extra_paragraphs'  => 'Min Extra Paragraphs',
+            'overlay_number'        => 'Overlay Number',
+            'sizeOfInitializedData' => 'Size Of Initialized Data',
+            'numberOfSymbols'       => 'Number Of Symbols',
+            'size_EXPORT'           => 'Size  Export',
+            'size_IAT'              => 'Size  Iat',
+            'size_Bound_IAT'        => 'Size  Bound  Iat',
+            'size_LOAD_CONFIG'      => 'Size  Load  Config',
+            'size_BASERELOC'        => 'Size  Basereloc',
+            'size_CLR_Header'       => 'Size  Clr  Header',
         ];
     }
 }

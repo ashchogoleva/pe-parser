@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-use app\components\VarDumper;
 use app\models\File;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
@@ -86,30 +85,114 @@ class SiteController extends Controller
         $fileContent = file_get_contents($filePath);
 
         $record->md5    = md5($fileContent);
-        $record->sha1   = sha1($fileContent);
-        $record->sha256 = hash('sha256', $fileContent);
 
+        list($mzResult, $mzFields) = $this->extractMZData($filePath);
+        $this->processResultsToRecord($record, $mzResult, $mzFields);
 
-        $mzDump   = $this->getDump($filePath, "--mz");
-        $mzResult = spyc_load($mzDump);
+        list($peResult, $peFields) = $this->extractPEData($filePath);
+        $this->processResultsToRecord($record, $peResult, $peFields);
 
-        VarDumper::dump($mzResult);
+        list($ddResult, $ddFields) = $this->extractDataDirectoryData($filePath);
+        $this->processResultsToRecord($record, $ddResult, $ddFields);
 
-        $mzFields = [
-            'bytes_in_last_block' => true,
+        return $record;
+    }
+
+    /**
+     * @param $filePath
+     *
+     * @return array
+     */
+    private function extractMZData($filePath)
+    {
+        $dump    = $this->getDump($filePath, "--mz");
+        $results = spyc_load($dump);
+
+        $fields = [
+            'bytes_in_last_block'  => true,
+            'blocks_in_file'       => true,
+            'min_extra_paragraphs' => true,
+            'overlay_number'       => true,
         ];
 
-        foreach ($mzFields as $resultField => $dbField) {
+        return [$results, $fields];
+    }
+
+    /**
+     * @param $filePath
+     *
+     * @return array
+     */
+    private function extractPEData($filePath)
+    {
+        $dump = $this->getDump($filePath, "--pe");
+        //$dump = str_replace("  - !ruby/struct:PEdump::IMAGE_DATA_DIRECTORY\n", '  -', $dump);
+        $dumpResults = spyc_load($dump);
+
+
+        $results = [
+            'sizeOfInitializedData' => isset($dumpResults['image_optional_header']['SizeOfInitializedData'])
+                ? $dumpResults['image_optional_header']['SizeOfInitializedData']
+                : null,
+            'numberOfSymbols'       => isset($dumpResults['image_file_header']['NumberOfSymbols'])
+                ? $dumpResults['image_file_header']['NumberOfSymbols']
+                : null,
+        ];
+
+
+        $fields = [
+            'sizeOfInitializedData' => true,
+            'numberOfSymbols'       => true,
+        ];
+
+        return [$results, $fields];
+    }
+
+
+    /**
+     * @param $filePath
+     *
+     * @return array
+     */
+    private function extractDataDirectoryData($filePath)
+    {
+        $dump        = $this->getDump($filePath, "--data-directory");
+        $dumpResults = spyc_load($dump);
+
+        $types   = ['EXPORT', 'IAT', 'Bound_IAT', 'LOAD_CONFIG', 'BASERELOC', 'CLR_Header'];
+        $results = [];
+        $fields  = [];
+
+        foreach ($dumpResults as $data) {
+            if (!is_array($data)) {
+                continue;
+            }
+
+            if (isset($data['type']) && in_array($data['type'], $types)) {
+                $fieldName           = 'size_' . $data['type'];
+                $results[$fieldName] = $data['size'];
+                $fields[$fieldName]  = true;
+            }
+        }
+
+        return [$results, $fields];
+    }
+
+    /**
+     * @param $record
+     * @param $results
+     * @param $fields
+     */
+    private function processResultsToRecord($record, $results, $fields)
+    {
+        foreach ($fields as $resultField => $dbField) {
             if ($dbField === true) {
                 $dbField = $resultField;
             }
 
-            if (isset($mzResult[$resultField])) {
-                $record->$dbField = $mzResult[$resultField];
+            if (isset($results[$resultField])) {
+                $record->$dbField = $results[$resultField];
             }
-
         }
-
-        return $record;
     }
 }

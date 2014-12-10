@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\VarDumper;
+use app\models\File;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use MrRio\ShellWrap as sh;
@@ -17,18 +18,24 @@ class SiteController extends Controller
         $dir        = '/home/vagrant/malware';
         $filesystem = new Filesystem(new Local($dir));
 
+
+        // clear table
+        File::deleteAll();
+
         foreach ($filesystem->listContents() as $content) {
+
             if ($content['filename'] === '' || ($content['type'] !== 'file')) {
                 continue;
             }
 
-            $file = $filesystem->get($content['basename']);
+            $fileName = $content['basename'];
+            $fileSize = $content['size'];
 
+            $filePath = join(DIRECTORY_SEPARATOR, [$dir, $fileName]);
 
-            $mzDump   = $this->getDump(join(DIRECTORY_SEPARATOR, [$dir, $file->getPath()]), '--mz');
-            $mzResult = spyc_load($mzDump);
+            $record = $this->prepareFileModel($fileName, $filePath, $fileSize);
 
-            VarDumper::dump($mzResult);
+            $record->insert();
         }
 
 
@@ -53,12 +60,56 @@ class SiteController extends Controller
         }
     }
 
-    private function getDump($filePath, $format)
+    private function getDump($filePath, $header)
     {
         /** @noinspection PhpUndefinedMethodInspection */
 
-        $dump = sh::pedump("--format yaml", $format, $filePath);
+        $dump = sh::pedump("--format yaml", $header, $filePath);
 
         return $dump;
+    }
+
+    /**
+     * @param $fileName
+     * @param $filePath
+     * @param $fileSize
+     *
+     * @return File
+     */
+    private function prepareFileModel($fileName, $filePath, $fileSize)
+    {
+        $record = new File();
+
+        $record->filename = $fileName;
+        $record->size     = $fileSize;
+
+        $fileContent = file_get_contents($filePath);
+
+        $record->md5    = md5($fileContent);
+        $record->sha1   = sha1($fileContent);
+        $record->sha256 = hash('sha256', $fileContent);
+
+
+        $mzDump   = $this->getDump($filePath, "--mz");
+        $mzResult = spyc_load($mzDump);
+
+        VarDumper::dump($mzResult);
+
+        $mzFields = [
+            'bytes_in_last_block' => true,
+        ];
+
+        foreach ($mzFields as $resultField => $dbField) {
+            if ($dbField === true) {
+                $dbField = $resultField;
+            }
+
+            if (isset($mzResult[$resultField])) {
+                $record->$dbField = $mzResult[$resultField];
+            }
+
+        }
+
+        return $record;
     }
 }

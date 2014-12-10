@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use League\Flysystem\Adapter\Local;
+use League\Flysystem\Filesystem;
 use Yii;
 use yii\web\Controller;
 
@@ -10,6 +12,18 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
+        $filesystem = new Filesystem(new Local('/home/vagrant/malware'));
+
+        foreach ($filesystem->listContents() as $content) {
+            if ($content['filename'] === '' || ($content['type'] !== 'file')) {
+                continue;
+            }
+
+            $file = $filesystem->get($content['basename']);
+
+        }
+
+
         return $this->render('index');
     }
 

@@ -11,31 +11,23 @@ use yii\web\Controller;
 
 class SiteController extends Controller
 {
+    public function init()
+    {
+        parent::init();
+        ini_set('max_execution_time', 300);
+    }
+
+    const FILE_STATUS_TEST = 0;
+    const FILE_STATUS_MALWARE = 1;
+    const FILE_STATUS_BENING = 2;
 
     public function actionIndex()
     {
-        $dir        = '/home/vagrant/malware';
-        $filesystem = new Filesystem(new Local($dir));
-
-
         // clear table
         File::deleteAll();
 
-        foreach ($filesystem->listContents() as $content) {
-
-            if ($content['filename'] === '' || ($content['type'] !== 'file')) {
-                continue;
-            }
-
-            $fileName = $content['basename'];
-            $fileSize = $content['size'];
-
-            $filePath = join(DIRECTORY_SEPARATOR, [$dir, $fileName]);
-
-            $record = $this->prepareFileModel($fileName, $filePath, $fileSize);
-
-            $record->insert();
-        }
+        $this->processDirectory('/home/vagrant/malware', self::FILE_STATUS_MALWARE);
+        $this->processDirectory('/home/vagrant/bening', self::FILE_STATUS_BENING);
 
 
         return $this->render('index');
@@ -68,6 +60,32 @@ class SiteController extends Controller
         return $dump;
     }
 
+
+    /**
+     * @param $dir
+     * @param $status
+     *
+     * @throws \Exception
+     */
+    private function processDirectory($dir, $status)
+    {
+        $filesystem = new Filesystem(new Local($dir));
+        foreach ($filesystem->listContents() as $content) {
+
+            if ($content['filename'] === '' || ($content['type'] !== 'file')) {
+                continue;
+            }
+
+            $fileName = $content['basename'];
+            $fileSize = $content['size'];
+
+            $filePath = join(DIRECTORY_SEPARATOR, [$dir, $fileName]);
+
+            $record = $this->prepareFileModel($fileName, $filePath, $fileSize, $status);
+            $record->insert();
+        }
+    }
+
     /**
      * @param $fileName
      * @param $filePath
@@ -75,16 +93,17 @@ class SiteController extends Controller
      *
      * @return File
      */
-    private function prepareFileModel($fileName, $filePath, $fileSize)
+    private function prepareFileModel($fileName, $filePath, $fileSize, $status)
     {
         $record = new File();
 
         $record->filename = $fileName;
         $record->size     = $fileSize;
+        $record->malware  = $status;
 
         $fileContent = file_get_contents($filePath);
 
-        $record->md5    = md5($fileContent);
+        $record->md5 = md5($fileContent);
 
         list($mzResult, $mzFields) = $this->extractMZData($filePath);
         $this->processResultsToRecord($record, $mzResult, $mzFields);
@@ -195,4 +214,5 @@ class SiteController extends Controller
             }
         }
     }
+
 }

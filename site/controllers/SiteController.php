@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\VarDumper;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use MrRio\ShellWrap as sh;
@@ -13,8 +14,7 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        $dir = '/home/vagrant/malware';
-
+        $dir        = '/home/vagrant/malware';
         $filesystem = new Filesystem(new Local($dir));
 
         foreach ($filesystem->listContents() as $content) {
@@ -25,8 +25,10 @@ class SiteController extends Controller
             $file = $filesystem->get($content['basename']);
 
 
-            echo sh::pedump("--mz", "--format yaml", join(DIRECTORY_SEPARATOR, [$dir, $file->getPath()]));
+            $mzDump   = $this->getDump(join(DIRECTORY_SEPARATOR, [$dir, $file->getPath()]), '--mz');
+            $mzResult = spyc_load($mzDump);
 
+            VarDumper::dump($mzResult);
         }
 
 
@@ -49,5 +51,14 @@ class SiteController extends Controller
         if (YII_DEBUG) {
             phpinfo();
         }
+    }
+
+    private function getDump($filePath, $format)
+    {
+        /** @noinspection PhpUndefinedMethodInspection */
+
+        $dump = sh::pedump("--format yaml", $format, $filePath);
+
+        return $dump;
     }
 }

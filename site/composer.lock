@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "48369274e96be9ab9f949fc32c8d55e7",
+    "hash": "4b7e9c4db3553658530c0a4c2624b8b7",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -530,6 +530,53 @@
             "time": "2014-11-11 19:08:16"
         },
         {
+            "name": "mustangostang/spyc",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mustangostang/spyc.git",
+                "reference": "eeb9f7c47e1457770d64c7fb1f3d4aabff52de4b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mustangostang/spyc/zipball/eeb9f7c47e1457770d64c7fb1f3d4aabff52de4b",
+                "reference": "eeb9f7c47e1457770d64c7fb1f3d4aabff52de4b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.5.x-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "Spyc.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "mustangostang",
+                    "email": "vlad.andersen@gmail.com"
+                }
+            ],
+            "description": "A simple YAML loader/dumper class for PHP",
+            "homepage": "https://github.com/mustangostang/spyc/",
+            "keywords": [
+                "spyc",
+                "yaml",
+                "yml"
+            ],
+            "time": "2014-08-21 09:14:01"
+        },
+        {
             "name": "yiisoft/yii2",
             "version": "2.0.1",
             "source": {
@@ -1015,7 +1062,8 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "league/flysystem": 20,
-        "mrrio/shellwrap": 20
+        "mrrio/shellwrap": 20,
+        "mustangostang/spyc": 20
     },
     "prefer-stable": false,
     "platform": {

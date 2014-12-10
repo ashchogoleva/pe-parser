@@ -1,0 +1,55 @@
+{
+    "name":              "ashchogoleve/pe-parser",
+    "type":              "project",
+    "minimum-stability": "dev",
+    "require":           {
+        "php": ">=5.5.0",
+
+        "yiisoft/yii2":           "2.0.1",
+        "yiisoft/yii2-bootstrap": "2.0.1",
+
+        "bower-asset/jquery": "2.1.1",
+        "bower-asset/i-bem":  "0.1.4"
+    },
+    "require-dev":       {
+        "yiisoft/yii2-codeception": "*",
+        "yiisoft/yii2-debug":       "*",
+        "yiisoft/yii2-gii":         "*",
+        "yiisoft/yii2-faker":       "*"
+    },
+    "config":            {
+        "process-timeout": 1800
+    },
+
+    "autoload": {
+        "psr-4": {"app\\": "./"}
+    },
+
+    "scripts": {
+        "post-create-project-cmd": [
+            "yii\\composer\\Installer::postCreateProject"
+        ]
+    },
+    "extra":   {
+        "yii\\composer\\Installer::postCreateProject": {
+            "setPermission":               [
+                {
+                    "runtime":    "0777",
+                    "web/assets": "0777",
+                    "yii":        "0755"
+                }
+            ],
+            "generateCookieValidationKey": [
+                "config/web.php"
+            ]
+        },
+        "asset-registry-options":                      {
+            "npm-searchable":   false,
+            "bower-searchable": false
+        },
+        "asset-installer-paths":                       {
+            "npm-asset-library":   "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
+    }
+}

@@ -21,7 +21,8 @@ echo "CREATE DATABASE pe_parser;" | mysql -u root -p$MYSQL_PASSWORD
 
 apt-get install -y mc
 
-/opt/ruby/bin/gem install pedump
+apt-get install -y ruby1.9.1
+gem install pedump
 
 SCRIPT
 

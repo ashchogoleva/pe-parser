@@ -23,24 +23,30 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        // clear table
-        File::deleteAll();
-
-        $this->processDirectory('/home/vagrant/malware', self::FILE_STATUS_MALWARE);
-        $this->processDirectory('/home/vagrant/bening', self::FILE_STATUS_BENING);
-
 
         return $this->render('index');
     }
 
     public function actionProcess()
     {
-        return $this->render('index');
+
+        $this->processDirectory('/home/vagrant/malware', self::FILE_STATUS_MALWARE);
+        $this->processDirectory('/home/vagrant/bening', self::FILE_STATUS_BENING);
+
+        return "Done";
     }
 
     public function actionValidate()
     {
         return $this->render('index');
+    }
+
+    public function actionClear() {
+
+        // clear table
+        File::deleteAll();
+
+        return "Cleared";
     }
 
 

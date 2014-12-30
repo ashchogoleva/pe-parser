@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\VarDumper;
 use app\models\File;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
@@ -17,9 +18,9 @@ class SiteController extends Controller
         ini_set('max_execution_time', 300);
     }
 
-    const FILE_STATUS_TEST = 0;
-    const FILE_STATUS_MALWARE = 1;
-    const FILE_STATUS_BENING = 2;
+    const FILE_STATUS_TEST = 'test';
+    const FILE_STATUS_MALWARE = 'malware';
+    const FILE_STATUS_BENING = 'bening';
 
     public function actionIndex()
     {
@@ -29,6 +30,7 @@ class SiteController extends Controller
 
     public function actionProcess()
     {
+        header('Content-Type: text/html; charset=utf-8');
         ini_set('output_buffering', 'off');
         ini_set('zlib.output_compression', false);
         while (@ob_end_flush()) {
@@ -100,18 +102,25 @@ class SiteController extends Controller
             $filePath = join(DIRECTORY_SEPARATOR, [$dir, $fileName]);
 
             $record = $this->prepareFileModel($fileName, $filePath, $fileSize, $status);
-            if ($record) {
+            if ($record && $record->validate()) {
                 $record->insert();
                 echo "{$fileName} processed.<br/>";
             } else {
-                echo "<i style='color: #dd0000'>{$fileName} skiped.</i><br/>";
+                if ($record && $record->hasErrors()) {
+                    VarDumper::dump($record->getErrors());
+                    echo "<i style='color: #dd0000'>{$fileName} has errors.</i><br/>";
+
+                } else {
+
+                    echo "<i style='color: #dddd00'>{$fileName} skiped.</i><br/>";
+                }
 
             }
 
             @ob_flush();
             flush();
         }
-        sleep(5);
+        sleep(1);
     }
 
     /**

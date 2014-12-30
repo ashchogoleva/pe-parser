@@ -29,9 +29,20 @@ class SiteController extends Controller
 
     public function actionProcess()
     {
+        ini_set('output_buffering', 'off');
+        ini_set('zlib.output_compression', false);
+        while (@ob_end_flush()) {
+
+        }
+        ini_set('implicit_flush', true);
+        ob_implicit_flush(true);
+
 
         $this->processDirectory('/home/vagrant/malware', self::FILE_STATUS_MALWARE);
         $this->processDirectory('/home/vagrant/bening', self::FILE_STATUS_BENING);
+
+        @ob_flush();
+        flush();
 
         return "Done";
     }
@@ -41,7 +52,8 @@ class SiteController extends Controller
         return $this->render('index');
     }
 
-    public function actionClear() {
+    public function actionClear()
+    {
 
         // clear table
         File::deleteAll();
@@ -78,7 +90,7 @@ class SiteController extends Controller
         $filesystem = new Filesystem(new Local($dir));
         foreach ($filesystem->listContents() as $content) {
 
-            if ($content['filename'] === '' || ($content['type'] !== 'file')) {
+            if ($content['type'] !== 'file') {
                 continue;
             }
 
@@ -88,8 +100,18 @@ class SiteController extends Controller
             $filePath = join(DIRECTORY_SEPARATOR, [$dir, $fileName]);
 
             $record = $this->prepareFileModel($fileName, $filePath, $fileSize, $status);
-            $record->insert();
+            if ($record) {
+                $record->insert();
+                echo "{$fileName} processed.<br/>";
+            } else {
+                echo "<i style='color: #dd0000'>{$fileName} skiped.</i><br/>";
+
+            }
+
+            @ob_flush();
+            flush();
         }
+        sleep(5);
     }
 
     /**
@@ -112,6 +134,9 @@ class SiteController extends Controller
         $record->md5 = md5($fileContent);
 
         list($mzResult, $mzFields) = $this->extractMZData($filePath);
+        if (empty($mzResult)) {
+            return null;
+        }
         $this->processResultsToRecord($record, $mzResult, $mzFields);
 
         list($peResult, $peFields) = $this->extractPEData($filePath);
